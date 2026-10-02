@@ -1,45 +1,44 @@
-## 1. Diseño y Requisitos
+# 1. Diseño y requisitos
 
-### Dominios elegidos
+## Dominios elegidos
 
-Para la infraestructura se ha elegido dos dominios ficticios uno para cada marca
+Para hacer la práctica se han elegido dos dominios ficticios, uno para cada marca:
 
+* **Marca 1:** `HRjuandragontech.local`
+* **Marca 2:** `HRshadowbyte.local`
 
-- **Marca 1:** "HRjuandragontech.local"
-- **Marca 2:** "HRshadowbyte.local"
+Los dos dominios son inventados y se utilizarán para diferenciar las dos marcas, aunque ambas estarán alojadas en el mismo servidor.
 
+## 2. MPM de Apache elegido
 
-Se han elegido estos nombre para diferenciar las 2 marcas que serian alojadas en la misma infraestructura. Ambos dominios son ficticios.
+El MPM que se va a utilizar en Apache es **event**.
 
+He elegido este MPM porque está pensado para trabajar con bastantes conexiones al mismo tiempo y permite aprovechar mejor los recursos del servidor. También funciona bien con conexiones persistentes, ya que no es necesario mantener un proceso ocupado mientras la conexión está esperando.
 
-### 2. MPM de Apache elegido
+Por este motivo, `event` resulta adecuado para el servidor que se plantea en esta práctica.
 
-El MPM elegido para Apache es **event**
+## 3. Arquitectura inicial
 
-Se ha escogido **event** porque permite gestionar de forma eficiente un gran número de conexiones sumultaneamente y aprovecha mejor los recursos<br>
- del sevidor. 
+En la primera fase se utilizará un único servidor Apache para alojar las dos marcas. Para separarlas se utilizarán **Virtual Hosts**.
 
-Su modelo de funcionamiento permite gestionar conexiones persistentes de manera eficiente.<br> 
+Cada dominio tendrá su propio Virtual Host y también tendrá un directorio independiente donde estarán sus archivos.
 
-Evitando mantener procesos inncesarios durante toda la conexion
+La estructura inicial sería la siguiente:
 
-### 3. Arquitectura inicial
-
-En la primera fase se utilizara un servidor apache para alojar las 2 marcas mediante **Virtual Hosts**
-
-Cada dominio tendra su propio Virtual Hosts y su propio directorio de documentos
-
-
+```text
 Cliente
-	|
-	|--- HRjuandragontech.local
-	|
-	|___ HRshadowbyte.local
-		    |
-		    |
-	     Servidor Apache
-		    |
-		    |
-       --------------------------
-       |                        |
-   Hrjuandragontech         HRshadowbyte.local
+   |
+   |--- HRjuandragontech.local
+   |
+   |--- HRshadowbyte.local
+            |
+            |
+      Servidor Apache
+            |
+     -------------------
+     |                 |
+     |                 |
+HRjuandragontech   HRshadowbyte
+```
+
+De esta forma, las dos marcas estarán en el mismo servidor, pero cada una tendrá su propia configuración y sus propios archivos.
